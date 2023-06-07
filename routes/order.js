@@ -6,6 +6,6 @@ const router = express.Router()
 
 router.get('/', getAll)
 router.post('/', isAuth, create)
-router.delete('/:id', isAuth, remove)
+router.patch('/:id', isAuth, remove)
 
 export default router

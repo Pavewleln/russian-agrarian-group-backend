@@ -100,28 +100,21 @@ export const create = async (req, res) => {
 
 export const remove = async (req, res) => {
     try {
-        OrderModel.findByIdAndDelete({
-            _id: req.params.id
-        }, (err, doc) => {
-            if (err) {
-                console.log(err)
-                return res.status(500).json({
-                    message: "Не удалось удалить запись"
-                })
-            }
-            if (!doc) {
-                return res.status(404).json({
-                    message: "Запись не найдена"
-                })
-            }
-            res.json({
-                success: true
-            })
-        })
+        const order = await OrderModel.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({
+                message: "Запись не найдена",
+            });
+        }
+        // Инвертируем значение поля `status`
+        order.status = !order.status;
+
+        const updatedOrder = await order.save();
+        res.json(updatedOrder);
     } catch (err) {
         console.log(err)
         return res.status(500).json({
-            message: "Не удалось удалить запись"
+            message: "Не удалось изменить запись"
         })
     }
 }
