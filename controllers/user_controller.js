@@ -5,8 +5,8 @@ import { findToken, validationRefreshToken } from '../services/token.service.js'
 
 export const registration = async (req, res) => {
     try {
-        const { email, password, name, surname} = req.body
-        const userData = await registerService(name, surname, email, password)
+        const { email, password, name, surname, isAdmin} = req.body
+        const userData = await registerService(name, surname, email, password, isAdmin)
         res.cookie('refreshToken', userData.refreshToken, {
             maxAge: 30 * 24 * 60 * 60 * 1000,
             httpOnly: true

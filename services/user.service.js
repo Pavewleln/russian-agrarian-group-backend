@@ -3,14 +3,15 @@ import UserModel from '../models/user.js'
 import { newUserData } from '../utils/userData.js'
 import { generateTokens, removeToken, saveToken } from "./token.service.js"
 
-export const registerService = async (name, surname, email, password) => {
+export const registerService = async (name, surname, email, password, isAdmin) => {
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(password, salt)
     const user = await UserModel.create({
         name,
         surname,
         email,
-        password: hash
+        password: hash,
+        isAdmin
     })
     const newUser = newUserData(user)
     const tokens = generateTokens(newUser)

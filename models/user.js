@@ -1,4 +1,4 @@
-import {Schema, model} from 'mongoose'
+import {model, Schema} from 'mongoose'
 
 
 const UserSchema = new Schema({
@@ -22,7 +22,12 @@ const UserSchema = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    // Статус
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
 }, {
     timestamps: true
 })

@@ -3,6 +3,7 @@ export const newUserData = (user) => {
         _id: user._id,
         name: user.name,
         surname: user.surname,
-        email: user.email
+        email: user.email,
+        isAdmin: user.isAdmin
     }
 }
