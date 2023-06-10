@@ -92,3 +92,63 @@ export const remove = async (req, res) => {
         })
     }
 }
+
+export const edit = async (req, res) => {
+    try {
+        const {
+            dateReceived,
+            manager,
+            organization,
+            loadingAddress,
+            unloadingAddress,
+            loadingDate,
+            unloadingDate,
+            sender,
+            recipient,
+            cargo,
+            transport,
+            driver,
+            vehicleNumber,
+            freightCost,
+            documentReceivedDate,
+            tabID
+        } = req.body;
+
+        const { status } = req.query;
+
+        const orderData = {
+            dateReceived,
+            manager,
+            organization,
+            loadingAddress,
+            unloadingAddress,
+            loadingDate,
+            unloadingDate,
+            sender,
+            recipient,
+            cargo,
+            tabID,
+            status: true,
+        };
+
+        if (status === "true") {
+            orderData.transport = transport;
+            orderData.driver = driver;
+            orderData.vehicleNumber = vehicleNumber;
+            orderData.freightCost = freightCost;
+            orderData.documentReceivedDate = documentReceivedDate;
+        }
+        const order = await OrderModel.findByIdAndUpdate(
+            req.params.id,
+            orderData,
+            { new: true }
+        );
+        res.json(order);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Не удалось изменить запись",
+            error,
+        });
+    }
+}
