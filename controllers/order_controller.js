@@ -4,7 +4,7 @@ export const getAll = async (req, res) => {
     const {tabID} = req.query;
     try {
         const orders = await OrderModel.find({tabID});
-        res.status(200).json(orders);
+        res.json(orders.reverse());
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -15,51 +15,51 @@ export const getAll = async (req, res) => {
 };
 
 export const create = async (req, res) => {
+    const {
+        dateReceived,
+        manager,
+        organization,
+        loadingAddress,
+        unloadingAddress,
+        loadingDate,
+        unloadingDate,
+        sender,
+        recipient,
+        cargo,
+        transport,
+        driver,
+        vehicleNumber,
+        freightCost,
+        documentReceivedDate,
+        tabID
+    } = req.body;
+
+    const {status} = req.query;
+
+    const orderData = {
+        dateReceived,
+        manager,
+        organization,
+        loadingAddress,
+        unloadingAddress,
+        loadingDate,
+        unloadingDate,
+        sender,
+        recipient,
+        cargo,
+        tabID,
+        status: true,
+    };
+
+    if (status === "true") {
+        orderData.transport = transport;
+        orderData.driver = driver;
+        orderData.vehicleNumber = vehicleNumber;
+        orderData.freightCost = freightCost;
+        orderData.documentReceivedDate = documentReceivedDate;
+    }
+
     try {
-        const {
-            dateReceived,
-            manager,
-            organization,
-            loadingAddress,
-            unloadingAddress,
-            loadingDate,
-            unloadingDate,
-            sender,
-            recipient,
-            cargo,
-            transport,
-            driver,
-            vehicleNumber,
-            freightCost,
-            documentReceivedDate,
-            tabID
-        } = req.body;
-
-        const { status } = req.query;
-
-        const orderData = {
-            dateReceived,
-            manager,
-            organization,
-            loadingAddress,
-            unloadingAddress,
-            loadingDate,
-            unloadingDate,
-            sender,
-            recipient,
-            cargo,
-            tabID,
-            status: true,
-        };
-
-        if (status === "true") {
-            orderData.transport = transport;
-            orderData.driver = driver;
-            orderData.vehicleNumber = vehicleNumber;
-            orderData.freightCost = freightCost;
-            orderData.documentReceivedDate = documentReceivedDate;
-        }
-
         const order = await new OrderModel(orderData);
         await order.save();
         res.json(order);
@@ -114,7 +114,7 @@ export const edit = async (req, res) => {
             tabID
         } = req.body;
 
-        const { status } = req.query;
+        const {status} = req.query;
 
         const orderData = {
             dateReceived,
@@ -141,7 +141,7 @@ export const edit = async (req, res) => {
         const order = await OrderModel.findByIdAndUpdate(
             req.params.id,
             orderData,
-            { new: true }
+            {new: true}
         );
         res.json(order);
     } catch (error) {
