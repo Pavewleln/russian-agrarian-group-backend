@@ -1,9 +1,20 @@
 import OrderModel from "../models/order.js";
 
 export const getAll = async (req, res) => {
-    const {tabID} = req.query;
+    const {tabID, date} = req.query;
     try {
-        const orders = await OrderModel.find({tabID});
+
+        // Приводим значение параметра date к формату "yyyy-mm-dd"
+        const formattedDate = date ? new Date(date).toISOString().substr(0, 10) : undefined;
+
+        // Фильтруем записи по полю dateReceived, если параметр date определен
+        let orders;
+        if (formattedDate) {
+            orders = await OrderModel.find({tabID, dateReceived: formattedDate});
+        } else {
+            orders = await OrderModel.find({tabID});
+        }
+
         res.json(orders.reverse());
     } catch (error) {
         console.log(error);
