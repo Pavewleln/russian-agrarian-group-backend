@@ -7,12 +7,17 @@ export const getAll = async (req, res) => {
         // Приводим значение параметра date к формату "yyyy-mm-dd"
         const formattedDate = date ? new Date(date).toISOString().substr(0, 10) : undefined;
 
-        // Фильтруем записи по полю dateReceived, если параметр date определен
         let orders;
-        if (formattedDate) {
-            orders = await OrderModel.find({tabID, dateReceived: formattedDate});
+        if (tabID === "archive") {
+            // Если tabID равен "archive", выбираем все записи с полем status равным false
+            orders = await OrderModel.find({status: false});
         } else {
-            orders = await OrderModel.find({tabID});
+            // Иначе выбираем записи с полем status равным true и фильтруем их по полю dateReceived, если параметр date определен
+            const query = {tabID, status: true};
+            if (formattedDate) {
+                query.dateReceived = formattedDate;
+            }
+            orders = await OrderModel.find(query);
         }
 
         res.json(orders.reverse());
