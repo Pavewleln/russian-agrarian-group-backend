@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser'
 import AuthRoute from './routes/auth.js'
 import OrderRoute from './routes/order.js'
 import TabsRoute from './routes/tabs.js'
+import DriverRoute from './routes/driver.js'
 
 dotenv.config()
 
@@ -22,6 +23,7 @@ app.use(cors())
 app.use('/auth', AuthRoute)
 app.use('/orders', OrderRoute)
 app.use('/tabs', TabsRoute)
+app.use('/drivers', DriverRoute)
 
 
 mongoose

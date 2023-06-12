@@ -3,24 +3,18 @@ import OrderModel from "../models/order.js";
 export const getAll = async (req, res) => {
     const {tabID, date} = req.query;
     try {
-
-        // Приводим значение параметра date к формату "yyyy-mm-dd"
-        const formattedDate = date ? new Date(date).toISOString().substr(0, 10) : undefined;
-
-        let orders;
+        let query = {};
         if (tabID === "archive") {
-            // Если tabID равен "archive", выбираем все записи с полем status равным false
-            orders = await OrderModel.find({status: false});
+            query.status = false;
         } else {
-            // Иначе выбираем записи с полем status равным true и фильтруем их по полю dateReceived, если параметр date определен
-            const query = {tabID, status: true};
-            if (formattedDate) {
-                query.dateReceived = formattedDate;
-            }
-            orders = await OrderModel.find(query);
+            query.tabID = tabID;
+            query.status = true;
         }
-
-        res.json(orders.reverse());
+        if (date) {
+            query.dateReceived = new Date(date).toISOString().substr(0, 10);
+        }
+        const orders = await OrderModel.find(query).sort({createdAt: -1});
+        res.json(orders);
     } catch (error) {
         console.log(error);
         res.status(500).json({
