@@ -99,3 +99,18 @@ export const refresh = async (req, res) => {
         })
     }
 }
+
+export const profile = async (req, res) => {
+    const userId = req.userId
+    try {
+        const userData = await UserModel.find({_id:userId});
+        const {_id, name, surname, email, password, isAdmin} = userData[0]
+        res.json({_id, name, surname, email, password, isAdmin});
+    } catch (error) {
+        console.log(error)
+        res.status(404).json({
+            message: "Нет доступа",
+            error
+        })
+    }
+}
